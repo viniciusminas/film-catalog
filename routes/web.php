@@ -6,3 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::resource('genres', GenreController::class);
 Route::resource('movies', MovieController::class);
+
+Route::get('/', function () {
+    return redirect()->route('movies.index');
+});

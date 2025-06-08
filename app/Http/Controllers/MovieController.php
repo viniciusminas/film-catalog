@@ -24,7 +24,7 @@ class MovieController extends Controller
     {
         $request->validate([
             'title' => 'required',
-            'synopsis' => 'nullable',
+            'synopsis' => 'nullable|string',
             'year' => 'required|integer',
             'genre_id' => 'required|exists:genres,id',
         ]);

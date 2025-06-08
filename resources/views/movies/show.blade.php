@@ -1,17 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ver Filme</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="p-5">
+@extends('layouts.app')
+
+@section('title', 'Detalhes do Filme')
+
+@section('content')
     <h1>Detalhes do Filme</h1>
 
-    <p><strong>Título:</strong> {{ $movie->title }}</p>
-    <p><strong>Sinopse:</strong> {{ $movie->synopsis }}</p>
-    <p><strong>Ano:</strong> {{ $movie->year }}</p>
-    <p><strong>Gênero:</strong> {{ $movie->genre->name }}</p>
+    <ul class="list-group mb-3">
+        <li class="list-group-item"><strong>ID:</strong> {{ $movie->id }}</li>
+        <li class="list-group-item"><strong>Título:</strong> {{ $movie->title }}</li>
+        <li class="list-group-item"><strong>Ano:</strong> {{ $movie->year }}</li>
+        <li class="list-group-item"><strong>Gênero:</strong> {{ $movie->genre->name }}</li>
+        <li class="list-group-item"><strong>Sinopse:</strong> {{ $movie->synopsis }}</li>
+    </ul>
 
-    <a class="btn btn-secondary" href="{{ route('movies.index') }}">Voltar</a>
-</body>
-</html>
+    <a href="{{ route('movies.index') }}" class="btn btn-primary">Voltar</a>
+@endsection
