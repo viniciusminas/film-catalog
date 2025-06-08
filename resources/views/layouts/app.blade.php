@@ -79,12 +79,12 @@
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link @if(request()->routeIs('movies.*')) active @endif" href="{{ route('movies.index') }}">
+                    <a class="nav-link @if(request()->routeIs('movies.*')) active @endif" href="{{ route('movies.index') }}" target="_blank" rel="noopener noreferrer">
                         <i class="bi bi-film me-1"></i> Filmes
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link @if(request()->routeIs('genres.*')) active @endif" href="{{ route('genres.index') }}">
+                    <a class="nav-link @if(request()->routeIs('genres.*')) active @endif" href="{{ route('genres.index') }}" target="_blank" rel="noopener noreferrer">
                         <i class="bi bi-tags me-1"></i> Gêneros
                     </a>
                 </li>

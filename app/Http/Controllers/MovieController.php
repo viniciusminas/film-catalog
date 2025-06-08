@@ -5,13 +5,28 @@ namespace App\Http\Controllers;
 use App\Models\Movie;
 use App\Models\Genre;
 use Illuminate\Http\Request;
+use App\Services\TMDBService;
 
 class MovieController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $movies = Movie::with('genre')->get();
-        return view('movies.index', compact('movies'));
+        $query = Movie::query()->with('genre');
+    
+        // Filtro por título
+        if ($request->has('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+        
+        // Filtro por gênero
+        if ($request->has('genre_id')) {
+            $query->where('genre_id', $request->genre_id);
+        }
+        
+        $movies = $query->paginate(10);
+        $genres = Genre::all();
+        
+        return view('movies.index', compact('movies', 'genres'));
     }
 
     public function create()
@@ -22,22 +37,30 @@ class MovieController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required',
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
             'synopsis' => 'nullable|string',
-            'year' => 'required|integer',
+            'year' => 'required|integer|min:1900|max:' . (date('Y') + 5),
             'genre_id' => 'required|exists:genres,id',
         ]);
 
-        Movie::create($request->all());
+        Movie::create($validated);
 
         return redirect()->route('movies.index')
-                         ->with('success', 'Filme criado com sucesso.');
+                        ->with('success', 'Filme criado com sucesso.');
     }
 
     public function show(Movie $movie)
     {
-        return view('movies.show', compact('movie'));
+        $tmdb = new TMDBService();
+        $apiData = $tmdb->getMovieDetails($movie->title, $movie->year);
+        
+        $movieDetails = $apiData['results'][0] ?? null;
+        
+        return view('movies.show', [
+            'movie' => $movie,
+            'tmdb' => $movieDetails
+        ]);
     }
 
     public function edit(Movie $movie)
@@ -48,17 +71,17 @@ class MovieController extends Controller
 
     public function update(Request $request, Movie $movie)
     {
-        $request->validate([
-            'title' => 'required',
-            'synopsis' => 'nullable',
-            'year' => 'required|integer',
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'synopsis' => 'nullable|string',
+            'year' => 'required|integer|min:1900|max:' . (date('Y') + 5),
             'genre_id' => 'required|exists:genres,id',
         ]);
 
-        $movie->update($request->all());
+        $movie->update($validated);
 
         return redirect()->route('movies.index')
-                         ->with('success', 'Filme atualizado com sucesso.');
+                        ->with('success', 'Filme atualizado com sucesso.');
     }
 
     public function destroy(Movie $movie)
@@ -66,6 +89,6 @@ class MovieController extends Controller
         $movie->delete();
 
         return redirect()->route('movies.index')
-                         ->with('success', 'Filme excluído com sucesso.');
+                        ->with('success', 'Filme excluído com sucesso.');
     }
 }
