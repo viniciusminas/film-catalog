@@ -129,7 +129,8 @@
 
     @if($movies->links())
         <div class="mt-3">
-            {{ $movies->appends(request()->query())->links() }}
+            {{ $movies->appends(request()->query())->links('vendor.pagination.bootstrap-5') }}
         </div>
     @endif
+
 @endsection
